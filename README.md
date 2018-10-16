@@ -23,8 +23,7 @@ can master this library directly.
 In addition, the only important thing you need to know is the output hash value of these implementations. 
 By [convention](https://github.com/Cyan4973/xxHash/blob/dev/doc/xxhash_spec.md#step-7-output), if the hash value output as byte array,
 it's layout should be big-endian format. So I added [XXHash32.HashUInt32 Property](https://github.com/differentrain/YYProject.XXHash/wiki/41a8b660-545c-4567-75e9-57cc8ed88cbf)
-and [XXHash64.HashUInt64 Property](https://github.com/differentrain/YYProject.XXHash/wiki/3d8fa3a8-53ce-8e95-6789-ac0e15244a1b) to get the
-corresponding unsigned integer value.
+and [XXHash64.HashUInt64 Property](https://github.com/differentrain/YYProject.XXHash/wiki/3d8fa3a8-53ce-8e95-6789-ac0e15244a1b) to get the corresponding original-unsigned-integer-value.
 
 Furthermore, the "seed" value can be initialized through the constructor, and set through "Seed" property before and after hash computing.
 And because the impact of [HashAlgorithm](https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.hashalgorithm) base class,
