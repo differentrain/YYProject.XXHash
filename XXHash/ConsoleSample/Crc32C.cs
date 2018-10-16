@@ -93,7 +93,7 @@ namespace ConsoleSample
                         var curPtr = buf;
                         while (cbSize-- > 0)
                         {
-                            _Hash = (_Hash >> 8) ^ _Crc32CTable[(_Hash ^ *curPtr++) & 0xFF];
+                            _Hash = (_Hash >> 8) ^ table[(_Hash ^ *curPtr++) & 0xFF];
                         }
                     }
                 }
