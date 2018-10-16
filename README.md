@@ -9,6 +9,9 @@ Since all code (XXHash32 and XXHash64) are inside these [file](https://raw.githu
 independently, I don't recommend using compiled library in your project, instead, 
 you can just copy the useful parts to your code, this is the benefit of MIT License. P:)
 
+If you are using .NET4.5 (or higher) or sibling frameworks, you can add conditional compilation
+symbol "HIGHER_VERSIONS" to optimize static-short-methods.
+
 ## Getting Started
 
 It's very easy to use this library. Both [XXHash32 Class](https://github.com/differentrain/YYProject.XXHash/wiki/cb2be3a3-5621-b343-992c-8a2af7fbe6df)

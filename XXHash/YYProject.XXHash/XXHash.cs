@@ -27,10 +27,16 @@ SOFTWARE. */
  * Since all code (XXHash32 and XXHash64) are inside these file independently, 
  * I don't recommend using compiled library in your project.
  * Instead, you can just copy the useful parts to your code, this is the benefit of MIT License. P:)
+ * 
+ * If you are using .NET4.5 (or higher) or sibling frameworks,  you can add conditional compilation
+ * symbol "HIGHER_VERSIONS" to optimize static-short-methods.
  */
 
 using System;
 using System.Security.Cryptography;
+#if HIGHER_VERSIONS
+using System.Runtime.CompilerServices;
+#endif
 
 
 namespace YYProject.XXHash
@@ -69,12 +75,12 @@ namespace YYProject.XXHash
 
         static XXHash32()
         {
-            if (BitConverter.IsLittleEndian) 
+            if (BitConverter.IsLittleEndian)
             {
 
                 FuncGetLittleEndianUInt32 = new Func<byte[], int, uint>((x, i) =>
                 {
-                    unsafe 
+                    unsafe
                     {
                         fixed (byte* array = x)
                         {
@@ -208,7 +214,11 @@ namespace YYProject.XXHash
         {
             if (_TotalLength >= 16)
             {
+#if HIGHER_VERSIONS
+                _Hash32 = RotateLeft32_1(_ACC32_1) + RotateLeft32_7(_ACC32_2) + RotateLeft32_12(_ACC32_3) + RotateLeft32_18(_ACC32_4);
+#else
                 _Hash32 = RotateLeft32(_ACC32_1, 1) + RotateLeft32(_ACC32_2, 7) + RotateLeft32(_ACC32_3, 12) + RotateLeft32(_ACC32_4, 18);
+#endif
             }
             else
             {
@@ -219,7 +229,11 @@ namespace YYProject.XXHash
 
             while (_RemainingLength >= 4)
             {
+#if HIGHER_VERSIONS
+                _Hash32 = RotateLeft32_17(_Hash32 + FuncGetLittleEndianUInt32(_CurrentArray, _CurrentIndex) * PRIME32_3) * PRIME32_4;
+#else
                 _Hash32 = RotateLeft32(_Hash32 + FuncGetLittleEndianUInt32(_CurrentArray, _CurrentIndex) * PRIME32_3, 17) * PRIME32_4;
+#endif
                 _CurrentIndex += 4;
                 _RemainingLength -= 4;
             }
@@ -229,7 +243,11 @@ namespace YYProject.XXHash
                 {
                     while (_RemainingLength-- >= 1)
                     {
+#if HIGHER_VERSIONS
+                        _Hash32 = RotateLeft32_11(_Hash32 + arrayPtr[_CurrentIndex++] * PRIME32_5) * PRIME32_1;
+#else
                         _Hash32 = RotateLeft32(_Hash32 + arrayPtr[_CurrentIndex++] * PRIME32_5, 11) * PRIME32_1;
+#endif
                     }
                 }
             }
@@ -242,17 +260,36 @@ namespace YYProject.XXHash
             return BitConverter.GetBytes(FuncGetFinalHashUInt32(_Hash32));
         }
 
+#if HIGHER_VERSIONS
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint Round32(uint input, uint value) => RotateLeft32_13(input + (value * PRIME32_2)) * PRIME32_1;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint RotateLeft32_1(uint value) => (value << 1) | (value >> 31); //_ACC32_1
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint RotateLeft32_7(uint value) => (value << 7) | (value >> 25); //_ACC32_2
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint RotateLeft32_11(uint value) => (value << 11) | (value >> 21);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint RotateLeft32_12(uint value) => (value << 12) | (value >> 20);// _ACC32_3
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint RotateLeft32_13(uint value) => (value << 13) | (value >> 19);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint RotateLeft32_17(uint value) => (value << 17) | (value >> 15);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint RotateLeft32_18(uint value) => (value << 18) | (value >> 14); //_ACC32_4
+#else
         private static uint Round32(uint input, uint value) => RotateLeft32(input + (value * PRIME32_2), 13) * PRIME32_1;
 
         private static uint RotateLeft32(uint value, int count) => (value << count) | (value >> (32 - count));
-
+#endif
         private void Initialize(uint seed)
         {
             HashSizeValue = 32;
             _Seed32 = seed;
             Initialize();
         }
-               
+
     }
 
     /// <summary>
@@ -444,7 +481,12 @@ namespace YYProject.XXHash
         {
             if (_TotalLength >= 32)
             {
+#if HIGHER_VERSIONS
+                _Hash64 = RotateLeft64_1(_ACC64_1) + RotateLeft64_7(_ACC64_2) + RotateLeft64_12(_ACC64_3) + RotateLeft64_18(_ACC64_4);
+#else
+
                 _Hash64 = RotateLeft64(_ACC64_1, 1) + RotateLeft64(_ACC64_2, 7) + RotateLeft64(_ACC64_3, 12) + RotateLeft64(_ACC64_4, 18);
+#endif
                 _Hash64 = MergeRound64(_Hash64, _ACC64_1);
                 _Hash64 = MergeRound64(_Hash64, _ACC64_2);
                 _Hash64 = MergeRound64(_Hash64, _ACC64_3);
@@ -459,14 +501,22 @@ namespace YYProject.XXHash
 
             while (_RemainingLength >= 8)
             {
+#if HIGHER_VERSIONS
+                _Hash64 = RotateLeft64_27(_Hash64 ^ Round64(0, FuncGetLittleEndianUInt64(_CurrentArray, _CurrentIndex))) * PRIME64_1 + PRIME64_4;
+#else
                 _Hash64 = RotateLeft64(_Hash64 ^ Round64(0, FuncGetLittleEndianUInt64(_CurrentArray, _CurrentIndex)), 27) * PRIME64_1 + PRIME64_4;
+#endif
                 _CurrentIndex += 8;
                 _RemainingLength -= 8;
             }
 
             while (_RemainingLength >= 4)
             {
+#if HIGHER_VERSIONS
+                _Hash64 = RotateLeft64_23(_Hash64 ^ (FuncGetLittleEndianUInt32(_CurrentArray, _CurrentIndex) * PRIME64_1)) * PRIME64_2 + PRIME64_3;
+#else
                 _Hash64 = RotateLeft64(_Hash64 ^ (FuncGetLittleEndianUInt32(_CurrentArray, _CurrentIndex) * PRIME64_1), 23) * PRIME64_2 + PRIME64_3;
+#endif
                 _CurrentIndex += 4;
                 _RemainingLength -= 4;
             }
@@ -477,7 +527,11 @@ namespace YYProject.XXHash
                 {
                     while (_RemainingLength-- >= 1)
                     {
+#if HIGHER_VERSIONS
+                        _Hash64 = RotateLeft64_11(_Hash64 ^ (arrayPtr[_CurrentIndex++] * PRIME64_5)) * PRIME64_1;
+#else
                         _Hash64 = RotateLeft64(_Hash64 ^ (arrayPtr[_CurrentIndex++] * PRIME64_5), 11) * PRIME64_1;
+#endif
                     }
                 }
             }
@@ -490,12 +544,37 @@ namespace YYProject.XXHash
             return BitConverter.GetBytes(FuncGetFinalHashUInt64(_Hash64));
         }
 
+#if HIGHER_VERSIONS
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong MergeRound64(ulong input, ulong value) => (input ^ Round64(0, value)) * PRIME64_1 + PRIME64_4;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong Round64(ulong input, ulong value) => RotateLeft64_31(input + (value * PRIME64_2)) * PRIME64_1;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong RotateLeft64_1(ulong value) => (value << 1) | (value >> 63); // _ACC64_1
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong RotateLeft64_7(ulong value) => (value << 7) | (value >> 57); //  _ACC64_2
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong RotateLeft64_11(ulong value) => (value << 11) | (value >> 53);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong RotateLeft64_12(ulong value) => (value << 12) | (value >> 52);// _ACC64_3
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong RotateLeft64_18(ulong value) => (value << 18) | (value >> 46); // _ACC64_4
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong RotateLeft64_23(ulong value) => (value << 23) | (value >> 41);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong RotateLeft64_27(ulong value) => (value << 27) | (value >> 37);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong RotateLeft64_31(ulong value) => (value << 31) | (value >> 33);
+#else
+        private static ulong MergeRound64(ulong input, ulong value) => (input ^ Round64(0, value)) * PRIME64_1 + PRIME64_4;
 
         private static ulong Round64(ulong input, ulong value) => RotateLeft64(input + (value * PRIME64_2), 31) * PRIME64_1;
 
-        private static ulong MergeRound64(ulong input, ulong value) => (input ^ Round64(0, value)) * PRIME64_1 + PRIME64_4;
-
         private static ulong RotateLeft64(ulong value, int count) => (value << count) | (value >> (64 - count));
+#endif
+
 
         private void Initialize(ulong seed)
         {
