@@ -36,8 +36,7 @@ The instance members in [XXHash32 Class](https://github.com/differentrain/YYProj
 For more, see this repo's [wiki](https://github.com/differentrain/YYProject.XXHash/wiki) and source code.
 
 ## Test
-I tested my implementations with official commandline tool [xxhsum](https://github.com/Cyan4973/xxHash/releases/download/v0.6.2/xxhsum-windows-v0.6.2.zip)
-(this repo includes all test code that was mentioned in these section), my implementations can get the correct result.
+I tested my implementations with official commandline tool [xxhsum](https://github.com/Cyan4973/xxHash/releases/download/v0.6.2/xxhsum-windows-v0.6.2.zip), and my implementations can get the correct result.
 
 So the only question is, Why and when we should use [xxHash](https://cyan4973.github.io/xxHash/) algorithm. I compared this library with
 the other hash algorithms' pure C# implementation: 
@@ -46,7 +45,9 @@ and two [implementations](https://raw.githubusercontent.com/differentrain/YYProj
 of [crc32C](https://tools.ietf.org/html/rfc3385) I wrote for this test, one is implemented by software code, and the other one
 is implemented with SSE4.2 instruction set. All this preparation has a reason: to know what advantages does xxHash have.
 
-``` vim
+(This repo includes all test code that was mentioned in these section, but note that the hardware accelerated Crc32C implementation can ONLY be run in windows, and all Crc32C implementation is apply only to little endian.)
+
+``` 
 File hash test on x86 debug
 
 Min size=1024, max size=104857601
