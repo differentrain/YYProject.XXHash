@@ -98,7 +98,7 @@ namespace YYProject.XXHash
                     {
                         fixed (byte* array = x)
                         {
-                            return (uint)((array[i++] << 24) | (array[i++] << 16) | (array[i++] << 8) | array[i++]);
+                            return (uint)(array[i++] | (array[i++] << 8) | (array[i++] << 16) | (array[i] << 24));
                         }
                     }
                 });
@@ -357,7 +357,7 @@ namespace YYProject.XXHash
                     {
                         fixed (byte* array = x)
                         {
-                            return (uint)((array[i++] << 24) | (array[i++] << 16) | (array[i++] << 8) | array[i++]);
+                            return (uint)(array[i++] | (array[i++] << 8) | (array[i++] << 16) | (array[i] << 24));
                         }
                     }
                 });
@@ -367,7 +367,7 @@ namespace YYProject.XXHash
                     {
                         fixed (byte* array = x)
                         {
-                            return (ulong)((array[i++] << 56) | (array[i++] << 48) | (array[i++] << 40) | (array[i++] << 32) | (array[i++] << 24) | (array[i++] << 16) | (array[i++] << 8) | array[i++]);
+                            return array[i++] | ((ulong)array[i++] << 8) | ((ulong)array[i++] << 16) | ((ulong)array[i++] << 24) | ((ulong)array[i++] << 32) | ((ulong)array[i++] << 40) | ((ulong)array[i++] << 48) | ((ulong)array[i] << 56);
                         }
                     }
                 });
