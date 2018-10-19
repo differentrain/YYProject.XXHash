@@ -217,8 +217,8 @@ CRC32C SSE42 average cost: 6.824378
 All Test Complete.
 ```
 From this test, we can easily found that ~~the hardware accelerated CRC32C is winner, cheers!~~ on production environments, 
-xxHash algorithm has remarkable advantage in speed, particularly in calculating the hole buffer directly. xxHash should be a good choose
+xxHash algorithm has remarkable advantage in speed, particularly in calculating the whole buffer directly. xxHash should be a good choose
 for date verification or other small-data-scenes.
 
-Deserved to be mentioned, xxHash32 has no significant advantage in x86, it seems that CLR makes efforts behind the scenes. And I have
-tried to compute the ["stripes"](https://github.com/Cyan4973/xxHash/blob/dev/doc/xxhash_spec.md) in parallel, but the effect was not ideal.
+Deserved to be mentioned, xxHash32 has no significant advantage in x86, it seems that CLR makes efforts behind the scenes, hence xxH32 is the best choice. And I have
+tried to compute the ["stripes"](https://github.com/Cyan4973/xxHash/blob/dev/doc/xxhash_spec.md) in parallel, but the effect was not ideal, the overhead of which are related to thread is high in this scenes.
