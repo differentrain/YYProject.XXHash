@@ -45,7 +45,7 @@ and two [implementations](https://raw.githubusercontent.com/differentrain/YYProj
 of [crc32C](https://tools.ietf.org/html/rfc3385) I wrote for this test, one is implemented by software code, and the other one
 is implemented with SSE4.2 instruction set. All this preparation has a reason: to know what advantages does xxHash have.
 
-(This repo includes all test code that was mentioned in these section, but note that the hardware accelerated Crc32C implementation can ONLY be run in windows, and all Crc32C implementation is apply only to little endian.)
+(This repo includes all test code that was mentioned in these section, but note that the hardware accelerated Crc32C implementation can ONLY be run in windows, and all Crc32C implementations are apply only to little endian.)
 
 ``` 
 File hash test on x86 debug
